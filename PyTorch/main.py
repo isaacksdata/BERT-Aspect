@@ -130,6 +130,6 @@ def main(debug: bool = False):
 
 
 if __name__ == '__main__':
-    DEBUG = True
+    DEBUG = False
 
     main(DEBUG)
