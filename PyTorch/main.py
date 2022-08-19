@@ -17,13 +17,13 @@ torch.manual_seed(SEED)
 def main(debug: bool = False):
     if debug:
         numclasses = 3
-        dataset = 'laptop'
+        dataset = 'fpl'
         datapath = '../Data/'
-        model_name = 'base'
+        model_name = 'attention'
         maxlen = 80
         batch_size = 8
-        numepochs = 2
-        runs = 10
+        numepochs = 1
+        runs = 1
     else:
         parser = argparse.ArgumentParser(description='BERT for ABSA')
         parser.add_argument('--dataset', type=str, default='laptop',
@@ -62,12 +62,12 @@ def main(debug: bool = False):
 
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    if(dataset not in ['laptop', 'restaurant', 'twitter']):
+    if(dataset not in ['laptop', 'restaurant', 'twitter', 'fpl']):
         raise ValueError('Invalid dataset selected')
     if(model_name not in ['lstm', 'attention', 'base']):
         raise ValueError('Invalid model selected')
 
-    if(dataset == 'laptop' or dataset == 'restaurant'):
+    if(dataset == 'laptop' or dataset == 'restaurant' or dataset == 'fpl'):
         (train_sentence, train_aspect, train_sentiment,
          test_sentence, test_aspect, test_sentiment) = load_semeval(dataset,
                                                                     numclasses,
@@ -130,6 +130,6 @@ def main(debug: bool = False):
 
 
 if __name__ == '__main__':
-    DEBUG = False
+    DEBUG = True
 
     main(DEBUG)
