@@ -24,6 +24,9 @@ def main(debug: bool = False):
         batch_size = 8
         numepochs = 1
         runs = 1
+        push_to_hub = False
+        model_repo = ''
+        token = ''
     else:
         parser = argparse.ArgumentParser(description='BERT for ABSA')
         parser.add_argument('--dataset', type=str, default='laptop',
@@ -41,6 +44,12 @@ def main(debug: bool = False):
                             help='Number of epochs to train')
         parser.add_argument('--runs', type=int, default=10,
                             help='Number of runs to report results')
+        parser.add_argument('--model-repo', type=str, default='',
+                            help='Name of the hugging face repositry to push the model to')
+        parser.add_argument('--hugging-face-token', type=str, default='',
+                            help='Authentication token for pushing to hugging face hub')
+        parser.add_argument('--push-to-hub', action='store_true',
+                            help='True if model should be pushed to hugging face', default=False)
 
         args = parser.parse_args()
         # Number of classes
@@ -59,6 +68,12 @@ def main(debug: bool = False):
         runs = args.runs
 
         maxlen = args.maxlen
+
+        push_to_hub = args.push_to_hub
+
+        model_repo = args.model_repo
+
+        token = args.hugging_face_token
 
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -125,8 +140,12 @@ def main(debug: bool = False):
                              test_token_type_ids, test_labels,
                              batch_size)
 
-    train_model(train_loader, dev_loader, test_loader, model_name,
+    model = train_model(train_loader, dev_loader, test_loader, model_name,
                 numclasses, numepochs, runs, DEVICE)
+
+    if push_to_hub and token is not None:
+        model.bert.push_to_hub(model_repo,
+                               use_auth_token=token)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,10 @@
 import torch
+import transformers
 from transformers import BertTokenizer
 import emoji
 import tqdm
+
+transformers.logging.set_verbosity_error()
 
 
 REMOVE_PATTERNS = {'\ufe0f': '',
